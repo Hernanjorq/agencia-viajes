@@ -1,0 +1,42 @@
+import React, { useState } from 'react';
+import axios from 'axios';
+
+function App() {
+  const [destino, setDestino] = useState('');
+  const [fecha, setFecha] = useState('');
+  const [vuelos, setVuelos] = useState([]);
+
+  const buscarVuelos = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/api/vuelos', {
+        params: { destino, fecha }
+      });
+      setVuelos(response.data);
+    } catch (error) {
+      console.error('Error al buscar vuelos', error);
+    }
+  };
+
+  return (
+    <div className="App">
+      <h1>Búsqueda de Vuelos</h1>
+      <div>
+        <label>Destino:</label>
+        <input type="text" value={destino} onChange={(e) => setDestino(e.target.value)} />
+      </div>
+      <div>
+        <label>Fecha:</label>
+        <input type="date" value={fecha} onChange={(e) => setFecha(e.target.value)} />
+      </div>
+      <button onClick={buscarVuelos}>Buscar</button>
+      <h2>Resultados:</h2>
+      <ul>
+        {vuelos.map(vuelo => (
+          <li key={vuelo.id}>{vuelo.destino} - {vuelo.fecha} - ${vuelo.precio}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default App;
